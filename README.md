@@ -27,7 +27,7 @@ A powerful, AI-driven personal assistant for your calendar, scheduling, and even
    pip install -r requirements.txt
    ```
 3. **Set up your environment:**
-   - Create `.env` and add your Groq API key:
+    Create `.env` and add your Groq API key:
      ```env
      GROQ_API_KEY=your_groq_api_key_here
      ```
