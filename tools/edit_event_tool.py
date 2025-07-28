@@ -1,6 +1,7 @@
 from langchain.tools import tool
 import json
 import os
+from tools.date_resolver_tool import resolve_day_from_date
 
 EVENTS_FILE = "events/event_data.json"
 
@@ -10,11 +11,11 @@ def edit_event(event_name: str, date: str | None, field_to_edit: str, new_value:
     Edit or delete an existing event in the event_data.json file based on event name and date.
 
     Args:
-        event_name: Name of the event to match.
+        event_name: Name of the event to match. pass it from the `find_event` tool. 
         date: Date of the event to match (format: DD-MM-YYYY).
         field_to_edit: The field to update (e.g., 'time', 'extra_info').
                        To delete the event, pass 'delete'.
-        new_value: The new value to assign to the specified field (ignored for delete).
+        new_value: The new value to assign to the specified field (ignored for delete) if it is date, it should be in 'DD-MM-YYYY' format.
 
     Returns:
         A confirmation message about the edit or deletion.
@@ -35,6 +36,12 @@ def edit_event(event_name: str, date: str | None, field_to_edit: str, new_value:
             if field_to_edit.lower() == "delete":
                 updated = True  # Don't append this event to the new list
                 continue
+            elif field_to_edit.lower() == "date":
+                if not new_value:
+                    return "Invalid date format. Please use DD-MM-YYYY."
+                event["date"] = new_value
+                event["day"] = resolve_day_from_date(new_value)
+                updated = True
             elif field_to_edit in event:
                 event[field_to_edit] = new_value
                 updated = True
@@ -46,7 +53,7 @@ def edit_event(event_name: str, date: str | None, field_to_edit: str, new_value:
     try:
         with open(EVENTS_FILE, "w") as f:
             json.dump(new_events, f, indent=4)
-
+            
         if field_to_edit.lower() == "delete":
             return f"🗑️ Successfully deleted event '{event_name}' on {date}."
         else:

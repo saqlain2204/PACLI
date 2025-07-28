@@ -75,9 +75,9 @@ def find_event(event_name: str, date: str | None) -> str:
 
     for e in filtered_events:
         if e.get("event_name", "").strip().lower() == best_name:
-            details = "\n".join([f"{key.capitalize().replace('_', ' ')}: {value}" for key, value in e.items()])
-            # RAG-style: also return a context block for LLM use
-            context = f"Event Context:\n{details}"
-            return f"✅ Found event (similarity {score:.2f}):\n\n{details}\n\n{context}"
-
-    return None
+            # Add similarity score to the event dict
+            event_json = dict(e)
+            event_json["similarity"] = round(float(score), 2)
+            return json.dumps(event_json, ensure_ascii=False, indent=2)
+    # If no event found, return a JSON error message
+    return json.dumps({"error": "No matching event found."}, ensure_ascii=False, indent=2)
