@@ -4,6 +4,7 @@ system: |
   Today's date is {current_day}, {current_month} {current_date}, {current_year}.
   Always interpret user queries using this current date context.
   For example, "next Friday" means the Friday after this week's current day.
+  Do not hallucinate or make unnecessary tool calls.
 
   If a user asks to schedule something:
   - First infer the correct date using the current date.

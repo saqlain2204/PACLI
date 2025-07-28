@@ -19,8 +19,8 @@ A powerful, AI-driven personal assistant for your calendar, scheduling, and even
 
 1. **Clone the repository:**
    ```sh
-   git clone <your-repo-url>
-   cd Personal Assistant
+   git clone https://github.com/saqlain2204/PACLI.git
+   cd PACLI
    ```
 2. **Install dependencies:**
    ```sh
@@ -32,13 +32,23 @@ A powerful, AI-driven personal assistant for your calendar, scheduling, and even
      GROQ_API_KEY=your_groq_api_key_here
      ```
 
+
 ### 2. Running the Assistant
 
-Run the CLI tool:
+#### Run with Python (local)
 ```sh
 python main.py
 ```
 
+#### Run with Docker
+Build the image:
+```sh
+docker build -t pacli .
+```
+Run the container (pass your Groq API key):
+```sh
+docker run --env GROQ_API_KEY=your_groq_api_key_here -it pacli
+```
 
 You'll see:
 ```
