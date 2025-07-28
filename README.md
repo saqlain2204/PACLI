@@ -4,7 +4,7 @@
 A powerful, AI-driven personal assistant for your calendar, scheduling, and event management. Built with LangChain, Groq LLM, and a flexible tool system, PACLI helps you manage your schedule, add and edit events, and answer natural language queries about your calendar—all from the command line.
 
 ## Features
-- **Natural Language Scheduling:** Add events using plain English (e.g., "Schedule Flipkart OA next Tuesday at 5pm").
+- **Natural Language Scheduling:** Add events using plain English (e.g., "Schedule OA next Tuesday at 5pm").
 - **Flexible Event Retrieval:** Ask for events in any time range ("next week", "next 2 weeks", "next 5 days", etc.).
 - **Event Editing:** Edit or update events by name and date.
 - **Event Search:** Find events by name and date, even with fuzzy matching.
