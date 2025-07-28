@@ -1,5 +1,8 @@
 
+
 # PACLI
+
+<img src="assets/image.png" alt="PACLI Logo" style="width:100%;display:block;" />
 
 A powerful, AI-driven personal assistant for your calendar, scheduling, and event management. Built with LangChain, Groq LLM, and a flexible tool system, PACLI helps you manage your schedule, add and edit events, and answer natural language queries about your calendar—all from the command line.
 
