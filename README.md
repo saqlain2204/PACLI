@@ -103,7 +103,7 @@ Personal Assistant/
 MIT
 
 ## Author
-Saqlain
+Mohammed Saqlain
 
 ---
 Enjoy PACLI, your AI-powered personal assistant! If you have questions or want to contribute, open an issue or pull request.
