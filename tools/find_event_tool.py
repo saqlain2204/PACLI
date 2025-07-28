@@ -66,7 +66,7 @@ def find_event(event_name: str, date: str | None) -> str:
     event_names = [e.get("event_name", "").strip().lower() for e in filtered_events]
 
     if not event_names:
-        return "❌ No events found for the given date." if date else "❌ No events found."
+        return None
 
     # Find most similar event name
     best_name, score = get_most_similar_event(event_name, event_names)
@@ -76,6 +76,8 @@ def find_event(event_name: str, date: str | None) -> str:
     for e in filtered_events:
         if e.get("event_name", "").strip().lower() == best_name:
             details = "\n".join([f"{key.capitalize().replace('_', ' ')}: {value}" for key, value in e.items()])
-            return f"✅ Found event (similarity {score:.2f}):\n\n{details}"
+            # RAG-style: also return a context block for LLM use
+            context = f"Event Context:\n{details}"
+            return f"✅ Found event (similarity {score:.2f}):\n\n{details}\n\n{context}"
 
     return None

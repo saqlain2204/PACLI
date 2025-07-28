@@ -5,7 +5,7 @@ import os
 EVENTS_FILE = "events/event_data.json"
 
 @tool
-def edit_event(event_name: str, date: str, field_to_edit: str, new_value: str = "") -> str:
+def edit_event(event_name: str, date: str | None, field_to_edit: str, new_value: str = "") -> str:
     """
     Edit or delete an existing event in the event_data.json file based on event name and date.
 
@@ -41,7 +41,7 @@ def edit_event(event_name: str, date: str, field_to_edit: str, new_value: str = 
         new_events.append(event)
 
     if not updated:
-        return f"❌ No event found with name '{event_name}' on '{date}', or field '{field_to_edit}' not valid."
+        return None
 
     try:
         with open(EVENTS_FILE, "w") as f:
