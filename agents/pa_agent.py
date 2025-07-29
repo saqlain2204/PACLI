@@ -9,7 +9,7 @@ from tools.event_scheduler import schedule_event
 from tools.get_events import get_event_schedule
 from tools.find_and_edit_tool import find_and_edit_event
 from tools.find_event_tool import find_event
-from tools.date_resolver_tool import resolve_day_from_date
+from tools.date_resolver_tool import resolve_day_from_date, resolve_date_from_phrase
 
 class PersonalAssistantAgent:
     def __init__(self):
@@ -42,7 +42,7 @@ class PersonalAssistantAgent:
             MessagesPlaceholder(variable_name="agent_scratchpad")
         ])
 
-        self.tools = [resolve_day_from_date, get_event_schedule, schedule_event, find_and_edit_event, find_event]
+        self.tools = [resolve_date_from_phrase, resolve_day_from_date, get_event_schedule, schedule_event, find_and_edit_event, find_event]
         self.agent = create_tool_calling_agent(llm=self.llm, tools=self.tools, prompt=self.prompt)
         self.agent_executor = AgentExecutor(agent=self.agent, tools=self.tools, verbose=True)
 

@@ -1,5 +1,5 @@
 from agents.pa_agent import PersonalAssistantAgent
-from utils.terminal_utils import print_title, print_prompt, print_success, print_info
+from utils.terminal_utils import print_title, print_prompt, print_success, print_info, print_event
 
 import os
 import json
@@ -14,23 +14,24 @@ if __name__ == "__main__":
             json.dump([], f)
 
     print_title("""
-    ██████╗  █████╗  ██████╗██╗     ██╗
-    ██╔══██╗██╔══██╗██╔════╝██║     ██║
-    ██████╔╝███████║██║     ██║     ██║
-    ██╔═══╝ ██╔══██║██║     ██║     ██║
-    ██║     ██║  ██║╚██████╗███████╗██║
-    ╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝╚═╝
+██████╗   █████╗   ██████╗ ██╗      ██╗
+██╔══██╗ ██╔══██╗ ██╔════╝ ██║      ██║
+██████╔╝ ███████║ ██║      ██║      ██║
+██╔═══╝  ██╔══██║ ██║      ██║      ██║
+██║      ██║  ██║ ╚██████╗ ███████╗ ██║
+╚═╝      ╚═╝  ╚═╝  ╚═════╝ ╚══════╝ ╚═╝
     """)
     print_success("Welcome to PACLI - Your AI-powered Personal Assistant!\n")
     print_info("Type your task below, or 'exit' to quit.")
     agent = PersonalAssistantAgent()
     
     while True:
-        print_prompt("\nAsk or Add Anything:")
+        print_prompt("\nHow can I help you today? > ", end="")
         task = input()
+        print_success(task)
         if task.lower() == 'exit':
             print_success("Goodbye! Have a productive day with PACLI.")
             break
         output = agent.run(task)
         print_success("\n✅ Final Output:\n")
-        print(output)
+        print_event(output)

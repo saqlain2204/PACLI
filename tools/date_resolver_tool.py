@@ -1,5 +1,6 @@
 from langchain.tools import tool
 from datetime import datetime
+import dateparser
 
 @tool
 def resolve_day_from_date(date_str: str) -> str:
@@ -19,3 +20,17 @@ def resolve_day_from_date(date_str: str) -> str:
         except ValueError:
             return "Invalid date format. Please use DD-MM-YYYY or YYYY-MM-DD."
     return dt.strftime("%A")
+
+@tool
+def resolve_date_from_phrase(phrase: str) -> str:
+    """
+    Convert a natural language date phrase (e.g., 'next Sunday', 'this Friday') to a date string (DD-MM-YYYY).
+    Args:
+        phrase (str): Natural language date phrase.
+    Returns:
+        str: Date string in DD-MM-YYYY format, or error message.
+    """
+    dt = dateparser.parse(phrase)
+    if not dt:
+        return "Could not parse the date phrase. Please try a different format."
+    return dt.strftime("%d-%m-%Y")

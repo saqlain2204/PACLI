@@ -1,53 +1,26 @@
+
 from langchain.tools import tool
-from datetime import datetime, timedelta
+from datetime import datetime
 import json
 import os
-import re
 
 EVENTS_FILE = "events/event_data.json"
 
-def parse_time_range(time_range: str):
-    """
-    Parse time_range like 'next 2 weeks', 'next 5 days', 'next week', etc.
-    Returns (start_date, end_date) as date objects.
-    """
-    today = datetime.today().date()
-    match = re.match(r"next (\d+) (week|weeks|day|days)", time_range.lower())
-    if match:
-        num = int(match.group(1))
-        unit = match.group(2)
-        if "week" in unit:
-            start = today + timedelta(days=(7 - today.weekday()))  # Next Monday
-            end = start + timedelta(days=7 * num - 1)
-        else:
-            start = today + timedelta(days=1)
-            end = start + timedelta(days=num - 1)
-        return start, end
-    elif time_range.lower() == "next week":
-        start = today + timedelta(days=(7 - today.weekday()))
-        end = start + timedelta(days=6)
-        return start, end
-    elif time_range.lower() == "this week":
-        start = today - timedelta(days=today.weekday())
-        end = start + timedelta(days=6)
-        return start, end
-    else:
-        return None, None
-
 @tool
-def get_event_schedule(time_range: str = "next_week") -> str:
+def get_event_schedule(date_str: str) -> str:
     """
-    Retrieve events within a flexible time range from the local JSON file.
+    Retrieve events scheduled on a specific date from the local JSON file.
 
     Args:
-        time_range: e.g. 'next week', 'next 2 weeks', 'next 5 days', 'this week', etc.
+        date_str: Date string in DD-MM-YYYY format (resolved from natural language).
 
     Returns:
-        A human-readable string of scheduled events in that time range.
+        A human-readable string of scheduled events on that date.
     """
-    start_date, end_date = parse_time_range(time_range)
-    if not start_date or not end_date:
-        return None
+    try:
+        search_date = datetime.strptime(date_str, "%d-%m-%Y").date()
+    except Exception:
+        return "Invalid date format. Please use DD-MM-YYYY."
 
     if not os.path.exists(EVENTS_FILE):
         return "📭 No events have been scheduled yet."
@@ -62,7 +35,7 @@ def get_event_schedule(time_range: str = "next_week") -> str:
     for event in events:
         try:
             event_date = datetime.strptime(event["date"], "%d-%m-%Y").date()
-            if start_date <= event_date <= end_date:
+            if event_date == search_date:
                 matched_events.append(
                     f"📌 {event['event_name']} — {event['day']}, {event['date']} at {event['time']}"
                 )
@@ -70,6 +43,6 @@ def get_event_schedule(time_range: str = "next_week") -> str:
             continue
 
     if not matched_events:
-        return f"📅 No events scheduled from {start_date.strftime('%A, %B %d')} to {end_date.strftime('%A, %B %d')}."
+        return f"📅 No events scheduled for {search_date.strftime('%A, %B %d')}."
 
-    return f"📅 Events from {start_date.strftime('%A, %B %d')} to {end_date.strftime('%A, %B %d')}:\n" + "\n".join(matched_events)
+    return f"📅 Events for {search_date.strftime('%A, %B %d')}:\n" + "\n".join(matched_events)

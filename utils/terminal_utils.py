@@ -10,6 +10,7 @@ custom_theme = Theme({
     "prompt": "bold magenta",
     "title": "bold blue underline",
     "event": "bold white",
+    "user_input": "bold green",
 })
 
 console = Console(theme=custom_theme)
@@ -26,8 +27,8 @@ def print_warning(message):
 def print_error(message):
     console.print(message, style="error")
 
-def print_prompt(message):
-    console.print(message, style="prompt")
+def print_prompt(message, end=""):
+    console.print(message, style="prompt", end=end)
 
 def print_title(message):
     console.print(message, style="title")
