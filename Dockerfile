@@ -1,3 +1,7 @@
+# PACLI Dockerfile
+# This Dockerfile sets up the backend CLI only.
+# To use the calendar frontend, run it locally as described in the README.
+
 # Use official Python image
 FROM python:3.12-slim
 

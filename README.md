@@ -1,5 +1,3 @@
-
-
 # PACLI
 
 <img src="assets/image.png" alt="PACLI Logo" style="width:100%;display:block;" />
@@ -15,6 +13,7 @@ A powerful, AI-driven personal assistant for your calendar, scheduling, and even
 - **Autonomous Tool Calling:** The agent automatically selects and calls the right tool for your query.
 - **Customizable Prompts:** Easily update assistant instructions via the YAML prompt file.
 - **Colorful CLI Output:** Enjoy a clear, readable interface with rich formatting.
+- **Codeforces Contest Integration:** Query upcoming Codeforces contests, schedule them to your calendar, and get contest details for any date or time range using natural language (e.g., "Show Codeforces contests next week").
 
 ## Usage
 
@@ -74,6 +73,39 @@ Type your query, such as:
 ### 5. Adding/Editing Tools
 - Tools are defined in the `tools/` folder.
 - Add new tools or update existing ones to extend functionality.
+
+## Frontend Calendar Visualization
+
+If you would like to see your events in a calendar UI:
+
+1. Go to the `calendar-frontend` folder.
+2. Install Node.js dependencies:
+   ```
+   npm install
+   ```
+3. Start both backend (event_data.json server) and frontend together:
+   ```
+   npm run start:all
+   ```
+   This will launch both the Python CORS server and the React calendar frontend automatically.
+
+- The calendar will be available at [http://localhost:3000](http://localhost:3000)
+- Your events will be visualized and updated live from the backend.
+
+## Docker Usage
+
+To run the backend in Docker:
+
+1. Build the Docker image:
+   ```
+   docker build -t pacli .
+   ```
+2. Run the container:
+   ```
+   docker run -it pacli
+   ```
+
+> **Note:** The frontend is not included in the Docker container. To use the calendar UI, run the frontend locally as described above.
 
 ## Project Structure
 ```
