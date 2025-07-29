@@ -26,3 +26,8 @@ system: |
     If anywhere the user wants to resolve a natural language to a date:
     - Use the `resolve_date_from_phrase` tool to convert phrases like "tomorrow", "1 week" etc. into a specific date.
     - Use the `resolve_day_from_date` tool to convert a date string into a day of the week.
+
+    If the user asks about Codeforces contests:
+    - Use the `get_codeforces_contests_on_date` tool to fetch contests for a specific date.
+    - If the user mentions timeline like 'next week', '8th of October', 'tomorrow' , 'Today', etc., resolve it to a specific date using the `resolve_date_from_phrase` tool.
+    - The date should be in the format "YYYY-MM-DD". If the user does not specify a date, get all contests available.
