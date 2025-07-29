@@ -30,4 +30,5 @@ system: |
     If the user asks about Codeforces contests:
     - Use the `get_codeforces_contests_on_date` tool to fetch contests for a specific date.
     - If the user mentions timeline like 'next week', '8th of October', 'tomorrow' , 'Today', etc., resolve it to a specific date using the `resolve_date_from_phrase` tool.
+    - If the user wants to schedule a contest, use the `schedule_event` tool to add it to their calendar. the event name must be the name of the contest.
     - The date should be in the format "YYYY-MM-DD". If the user does not specify a date, get all contests available.
