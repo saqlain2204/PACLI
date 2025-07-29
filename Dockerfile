@@ -1,6 +1,8 @@
 # PACLI Dockerfile
 # This Dockerfile sets up the backend CLI only.
-# To use the calendar frontend, run it locally as described in the README.
+# Docker support is **not** added for the frontend calendar or email automation.
+# To use the calendar frontend and schedule emails, run those scripts locally as described in the README.
+# You can schedule and interact with the assistant and email scripts using Windows Task Scheduler or manual commands.
 
 # Use official Python image
 FROM python:3.12-slim

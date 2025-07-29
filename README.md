@@ -1,7 +1,5 @@
 # PACLI
 
-<img src="assets/image.png" alt="PACLI Logo" style="width:100%;display:block;" />
-
 A powerful, AI-driven personal assistant for your calendar, scheduling, and event management. Built with LangChain, Groq LLM, and a flexible tool system, PACLI helps you manage your schedule, add and edit events, and answer natural language queries about your calendar—all from the command line.
 
 ## Features
@@ -14,6 +12,24 @@ A powerful, AI-driven personal assistant for your calendar, scheduling, and even
 - **Customizable Prompts:** Easily update assistant instructions via the YAML prompt file.
 - **Colorful CLI Output:** Enjoy a clear, readable interface with rich formatting.
 - **Codeforces Contest Integration:** Query upcoming Codeforces contests, schedule them to your calendar, and get contest details for any date or time range using natural language (e.g., "Show Codeforces contests next week").
+- **Automated Next-Day Event Email:** Get a beautiful HTML email of your next day's events sent automatically via Gmail.
+
+## Automated Next-Day Event Email
+
+1. Schedule `send_scheduled_mail.py` with Windows Task Scheduler to send the email at your preferred time.
+2. The email uses HTML formatting for a clear, modern look.
+3. After sending, the events file is deleted for privacy.
+
+**Setup:**
+- Add your Gmail credentials and recipient email to `.env` (use an App Password if 2FA is enabled).
+- Make sure `python-dotenv` is installed (`pip install python-dotenv`).
+- Use the real Python executable path in Task Scheduler (not the Windows Store launcher).
+
+
+**Note:**
+- Your confidential data stays local; no event info is sent to external servers except Gmail.
+- **Docker support is currently not added for email automation or the calendar/frontend.**
+- To use the calendar UI (frontend), run it locally and fetch event data directly from the backend. You can schedule and interact with the frontend and email/calendar automation using Windows Task Scheduler or by running the scripts manually. See below for instructions.
 
 ## Usage
 
@@ -29,27 +45,19 @@ A powerful, AI-driven personal assistant for your calendar, scheduling, and even
    pip install -r requirements.txt
    ```
 3. **Set up your environment:**
-    Create `.env` and add your Groq API key:
+    Create `.env` and add your Groq API key and Gmail credentials:
      ```env
      GROQ_API_KEY=your_groq_api_key_here
+     GMAIL_ADDRESS=your_gmail_address@gmail.com
+     GMAIL_APP_PASSWORD=your_gmail_app_password
+     RECIPIENT_EMAIL=recipient_email@gmail.com
      ```
-
 
 ### 2. Running the Assistant
 
 #### Run with Python (local)
 ```sh
 python main.py
-```
-
-#### Run with Docker
-Build the image:
-```sh
-docker build -t pacli .
-```
-Run the container (pass your Groq API key):
-```sh
-docker run --env GROQ_API_KEY=your_groq_api_key_here -it pacli
 ```
 
 You'll see:
@@ -74,39 +82,6 @@ Type your query, such as:
 - Tools are defined in the `tools/` folder.
 - Add new tools or update existing ones to extend functionality.
 
-## Frontend Calendar Visualization
-
-If you would like to see your events in a calendar UI:
-
-1. Go to the `calendar-frontend` folder.
-2. Install Node.js dependencies:
-   ```
-   npm install
-   ```
-3. Start both backend (event_data.json server) and frontend together:
-   ```
-   npm run start:all
-   ```
-   This will launch both the Python CORS server and the React calendar frontend automatically.
-
-- The calendar will be available at [http://localhost:3000](http://localhost:3000)
-- Your events will be visualized and updated live from the backend.
-
-## Docker Usage
-
-To run the backend in Docker:
-
-1. Build the Docker image:
-   ```
-   docker build -t pacli .
-   ```
-2. Run the container:
-   ```
-   docker run -it pacli
-   ```
-
-> **Note:** The frontend is not included in the Docker container. To use the calendar UI, run the frontend locally as described above.
-
 ## Project Structure
 ```
 Personal Assistant/
@@ -123,6 +98,7 @@ Personal Assistant/
 ├── events/
 │   └── event_data.json
 ├── main.py
+├── send_scheduled_mail.py
 ├── README.md
 └── requirements.txt
 ```

@@ -48,5 +48,5 @@ class PersonalAssistantAgent:
         self.agent_executor = AgentExecutor(agent=self.agent, tools=self.tools, verbose=True)
 
     def run(self, user_input: str) -> str:
-        result = self.agent_executor.invoke({"input": user_input + "event"})
+        result = self.agent_executor.invoke({"input": user_input})
         return result["output"]

@@ -18,10 +18,22 @@ def normalize_date(date_str):
     """
     if not date_str:
         return None
-    try:
-        return datetime.strptime(date_str, "%d-%m-%Y").strftime("%d-%m-%Y")
-    except ValueError:
-        return None
+    # If it's a datetime object, convert to string
+    if isinstance(date_str, datetime):
+        return date_str.strftime("%d-%m-%Y")
+    # If it's not a string, try to convert
+    if not isinstance(date_str, str):
+        try:
+            date_str = str(date_str)
+        except Exception:
+            return None
+    # Try common formats
+    for fmt in ["%d-%m-%Y", "%Y-%m-%d", "%d/%m/%Y", "%Y/%m/%d"]:
+        try:
+            return datetime.strptime(date_str, fmt).strftime("%d-%m-%Y")
+        except ValueError:
+            continue
+    return None
 
 def get_most_similar_event(query, event_names):
     """
@@ -39,7 +51,7 @@ def get_most_similar_event(query, event_names):
     return event_names[best_idx], similarities[best_idx]
 
 @tool
-def find_event(event_name: str, date: str | None) -> str:
+def find_event(event_name: str, date) -> str:
     """
     Find a scheduled event by name and optionally by date, using string similarity if needed.
     If date is provided, only events on that date are considered. If not, all events are considered.
@@ -51,6 +63,12 @@ def find_event(event_name: str, date: str | None) -> str:
         str or None: Formatted string with event details if found, otherwise None.
     """
     event_name = event_name.strip().lower()
+    # Ensure date is a string before normalization
+    if date is not None and not isinstance(date, str):
+        try:
+            date = str(date)
+        except Exception:
+            date = None
     date = normalize_date(date) if date else None
     if not os.path.exists(EVENTS_FILE):
         return "❌ Event file not found."

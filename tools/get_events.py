@@ -1,23 +1,10 @@
 
-
 from langchain.tools import tool
-from datetime import datetime, timedelta
+from datetime import datetime
 import json
 import os
 
 EVENTS_FILE = "events/event_data.json"
-
-def get_next_week_range(today=None):
-    """
-    Returns the start (Monday) and end (Sunday) dates of the next week from today.
-    """
-    if today is None:
-        today = datetime.today().date()
-    # Find next Monday
-    days_until_next_monday = (7 - today.weekday()) % 7 or 7
-    next_monday = today + timedelta(days=days_until_next_monday)
-    next_sunday = next_monday + timedelta(days=6)
-    return next_monday, next_sunday
 
 @tool
 def get_event_schedule(start_date_str: str, end_date_str: str) -> str:
@@ -27,9 +14,6 @@ def get_event_schedule(start_date_str: str, end_date_str: str) -> str:
     Args:
         start_date_str: Start date string in DD-MM-YYYY format.
         end_date_str: End date string in DD-MM-YYYY format.
-
-    Note:
-        For queries like 'next week', resolve to the Monday and Sunday of the next week.
 
     Returns:
         A human-readable string of scheduled events in that range.
