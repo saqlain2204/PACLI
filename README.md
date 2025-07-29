@@ -55,7 +55,7 @@ docker run --env GROQ_API_KEY=your_groq_api_key_here -it pacli
 
 You'll see:
 ```
-Enter your task (or 'exit' to quit):
+How can i help you today? >
 ```
 Type your query, such as:
 - `Schedule OA next Wednesday at 10am`
