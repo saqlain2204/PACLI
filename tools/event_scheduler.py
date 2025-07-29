@@ -26,6 +26,8 @@ def schedule_event(date: str, time: str | None, event_name: str, extra_info: str
     except ValueError:
         return "❌ Invalid date format. Use YYYY-MM-DD."
 
+    if not time:
+        time = ""
     formatted_event = {
         "event_name": event_name,
         "date": date_obj.strftime("%d-%m-%Y"),

@@ -66,12 +66,12 @@ def find_event(event_name: str, date: str | None) -> str:
     event_names = [e.get("event_name", "").strip().lower() for e in filtered_events]
 
     if not event_names:
-        return None
+        return json.dumps({"error": "No events found for the specified date." if date else "No events found."}, ensure_ascii=False, indent=2)
 
     # Find most similar event name
     best_name, score = get_most_similar_event(event_name, event_names)
-    if score < 0.5:  # You can adjust this threshold
-        return None
+    if score < 0.5:
+        return json.dumps({"error": "No matching event found."}, ensure_ascii=False, indent=2)
 
     for e in filtered_events:
         if e.get("event_name", "").strip().lower() == best_name:
