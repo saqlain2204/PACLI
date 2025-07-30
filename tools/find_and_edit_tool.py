@@ -21,7 +21,7 @@ def normalize_date(date_str):
         return None
 
 @tool
-def find_and_edit_event(event_name: str, field_to_edit: str, new_value: str, date: str | None) -> str:
+def find_and_edit_event(event_name: str, field_to_edit: str, new_value: str, date: str | None, public: bool) -> str:
     """
     Find an event by name and automatically edit a specified field in it.
     
@@ -33,32 +33,51 @@ def find_and_edit_event(event_name: str, field_to_edit: str, new_value: str, dat
     Returns:
         Result of the edit operation.
     """
-    # First find the event
+    # First find the event(s)
     date_arg = normalize_date(date) if date else None
     found_json = find_event.invoke({"event_name": event_name, "date": date_arg})
     if "error" in found_json:
         return "❌ Event not found. Please check the event name or date."
     found_data = json.loads(found_json)
 
-    if not found_data or (date and found_data.get("date") != date):
+    if not found_data or (isinstance(found_data, list) and len(found_data) == 0):
         return "Event not found or invalid response from find_event."
 
-    if not date:
-        date = found_data["date"]
-    
-    print(f"Found event: {found_data}")
-    event_name = found_data["event_name"]
-    
-    if field_to_edit.lower() == "date":
-        new_value = normalize_date(new_value)
-        if not new_value:
-            return "Invalid date format. Please use DD-MM-YYYY."
+    # Filter events by visibility
+    if isinstance(found_data, list):
+        if public is None:
+            events_to_edit = found_data
+        elif public:
+            events_to_edit = [e for e in found_data if e.get("visibility", "public") == "public"]
+        else:
+            events_to_edit = [e for e in found_data if e.get("visibility", "public") == "private"]
+    else:
+        if public is None or found_data.get("visibility", "public") == ("public" if public else "private"):
+            events_to_edit = [found_data]
+        else:
+            events_to_edit = []
 
-    # Call edit_event with extracted info
-    result = edit_event.invoke({
-        "event_name": event_name,
-        "date": date,
-        "field_to_edit": field_to_edit,
-        "new_value": new_value
-    })
-    return result
+    results = []
+    for event in events_to_edit:
+        edit_date = event.get("date")
+        edit_name = event.get("event_name")
+        if not edit_date or not edit_name:
+            continue
+        if field_to_edit.lower() == "date":
+            new_value_norm = normalize_date(new_value)
+            if not new_value_norm:
+                results.append("Invalid date format. Please use DD-MM-YYYY.")
+                continue
+            new_value_to_use = new_value_norm
+        else:
+            new_value_to_use = new_value
+        result = edit_event.invoke({
+            "event_name": edit_name,
+            "date": edit_date,
+            "field_to_edit": field_to_edit,
+            "new_value": new_value_to_use
+        })
+        results.append(result)
+    if not results:
+        return "No matching events found to edit."
+    return "\n".join(results)

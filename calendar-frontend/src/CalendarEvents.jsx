@@ -19,10 +19,16 @@ function CalendarEvents() {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
 
-  useEffect(() => {
+  // Use local network IP for event data fetch
+  const EVENTS_API_URL = window.location.hostname === "localhost"
+    ? "http://localhost:8000/events/event_data.json"
+    : `http://${window.location.hostname}:8000/events/event_data.json`;
+
+  // Fetch events from backend
+  const fetchEvents = () => {
     setLoading(true);
     setError(null);
-    fetch("http://localhost:8000/events/event_data.json")
+    fetch(EVENTS_API_URL)
       .then(res => {
         if (!res.ok) throw new Error("Network response was not ok");
         return res.json();
@@ -36,16 +42,23 @@ function CalendarEvents() {
         setEvents([]);
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetchEvents();
   }, []);
 
-  // Listen for SSE updates and show persistent toast
+  // Listen for SSE updates and show persistent toast, refetch events on update
   useEffect(() => {
-    const eventSource = new window.EventSource('http://localhost:8000/events/stream');
+    const streamUrl = window.location.hostname === "localhost"
+      ? "http://localhost:8000/events/stream"
+      : `http://${window.location.hostname}:8000/events/stream`;
+    const eventSource = new window.EventSource(streamUrl);
     eventSource.onmessage = (e) => {
       if (e.data === 'updated') {
         setToastMessage('Event data updated!');
         setShowToast(true);
-        // Optionally, refetch event data here
+        fetchEvents(); // Refetch events when backend notifies update
       }
     };
     return () => eventSource.close();

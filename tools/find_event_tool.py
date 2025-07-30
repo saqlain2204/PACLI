@@ -62,7 +62,7 @@ def find_event(event_name: str, date) -> str:
     Returns:
         str or None: Formatted string with event details if found, otherwise None.
     """
-    event_name = event_name.strip().lower()
+    event_name = event_name.strip().lower() if event_name else None
     # Ensure date is a string before normalization
     if date is not None and not isinstance(date, str):
         try:
@@ -79,23 +79,39 @@ def find_event(event_name: str, date) -> str:
     except json.JSONDecodeError:
         return "❌ Failed to load events. The file may be corrupted."
 
-    # Filter by date if provided
-    filtered_events = [e for e in events if (not date or e.get("date") == date)]
-    event_names = [e.get("event_name", "").strip().lower() for e in filtered_events]
+    # Match events using all provided fields
+    def matches(event, name, date, time=None, extra_info=None):
+        if name and event.get("event_name", "").strip().lower() != name:
+            return False
+        if date and event.get("date") != date:
+            return False
+        if time and event.get("time", "") != time:
+            return False
+        if extra_info and event.get("extra_info", "") != extra_info:
+            return False
+        return True
 
-    if not event_names:
-        return json.dumps({"error": "No events found for the specified date." if date else "No events found."}, ensure_ascii=False, indent=2)
+    # Try to match with all fields if provided
+    matched_events = []
+    for e in events:
+        if matches(e, event_name, date, e.get("time", None), e.get("extra_info", None)):
+            matched_events.append(e)
 
-    # Find most similar event name
-    best_name, score = get_most_similar_event(event_name, event_names)
-    if score < 0.5:
+    # If no exact match, fallback to fuzzy name/date match
+    if not matched_events:
+        filtered_events = [e for e in events if (not date or e.get("date") == date)]
+        event_names = [e.get("event_name", "").strip().lower() for e in filtered_events]
+        if not event_names:
+            return json.dumps({"error": "No events found for the specified date." if date else "No events found."}, ensure_ascii=False, indent=2)
+        best_name, score = get_most_similar_event(event_name, event_names)
+        if score < 0.5:
+            return json.dumps({"error": "No matching event found."}, ensure_ascii=False, indent=2)
+        for e in filtered_events:
+            if e.get("event_name", "").strip().lower() == best_name:
+                event_json = dict(e)
+                event_json["similarity"] = round(float(score), 2)
+                return json.dumps(event_json, ensure_ascii=False, indent=2)
         return json.dumps({"error": "No matching event found."}, ensure_ascii=False, indent=2)
 
-    for e in filtered_events:
-        if e.get("event_name", "").strip().lower() == best_name:
-            # Add similarity score to the event dict
-            event_json = dict(e)
-            event_json["similarity"] = round(float(score), 2)
-            return json.dumps(event_json, ensure_ascii=False, indent=2)
-    # If no event found, return a JSON error message
-    return json.dumps({"error": "No matching event found."}, ensure_ascii=False, indent=2)
+    # Return all matched events
+    return json.dumps(matched_events, ensure_ascii=False, indent=2)
