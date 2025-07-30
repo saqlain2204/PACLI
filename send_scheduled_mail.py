@@ -108,12 +108,14 @@ def send_scheduled_mail():
     html_remaining_month_public = format_html_email(remaining_month_events_public, f"Remaining Month: {today.strftime('%B %Y')}")
     html_remaining_month_all = format_html_email(remaining_month_events_all, f"Remaining Month: {today.strftime('%B %Y')}")
 
+    disclaimer_html = "<div style='font-size:0.85em;color:#888;margin-top:24px;text-align:center;'>Events may not be 100% accurate.</div>"
     # Combine event sections for recipients (only public events)
     combined_html_public = "".join([
         f"<h2 style='color:#222;'>Next Day ({tomorrow_str})</h2>" + html_next_day_public,
         f"<h2 style='color:#222;'>This Week Remaining ({today.strftime('%d-%m-%Y')} to {this_sunday_str})</h2>" + html_this_week_public,
         f"<h2 style='color:#222;'>Next Week ({next_monday_str} to {next_sunday_str})</h2>" + html_next_week_public,
-        f"<h2 style='color:#222;'>Remaining Events for {today.strftime('%B %Y')}</h2>" + html_remaining_month_public
+        f"<h2 style='color:#222;'>Remaining Events for {today.strftime('%B %Y')}</h2>" + html_remaining_month_public,
+        disclaimer_html
     ])
     subject_public = f"Your Calendar: Upcoming Public Events ({tomorrow_str}, This Week: {today.strftime('%d-%m-%Y')} to {this_sunday_str}, Next Week: {next_monday_str} to {next_sunday_str}, {today.strftime('%B %Y')})"
 
@@ -122,7 +124,8 @@ def send_scheduled_mail():
         f"<h2 style='color:#222;'>Next Day ({tomorrow_str})</h2>" + html_next_day_all,
         f"<h2 style='color:#222;'>This Week Remaining ({today.strftime('%d-%m-%Y')} to {this_sunday_str})</h2>" + html_this_week_all,
         f"<h2 style='color:#222;'>Next Week ({next_monday_str} to {next_sunday_str})</h2>" + html_next_week_all,
-        f"<h2 style='color:#222;'>Remaining Events for {today.strftime('%B %Y')}</h2>" + html_remaining_month_all
+        f"<h2 style='color:#222;'>Remaining Events for {today.strftime('%B %Y')}</h2>" + html_remaining_month_all,
+        disclaimer_html
     ])
     subject_all = f"Your Calendar: Upcoming Events ({tomorrow_str}, This Week: {today.strftime('%d-%m-%Y')} to {this_sunday_str}, Next Week: {next_monday_str} to {next_sunday_str}, {today.strftime('%B %Y')})"
 

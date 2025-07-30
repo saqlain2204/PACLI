@@ -13,8 +13,7 @@ def edit_event(event_name: str, date: str | None, field_to_edit: str, new_value:
     Args:
         event_name: Name of the event to match. pass it from the `find_event` tool. 
         date: Date of the event to match (format: DD-MM-YYYY).
-        field_to_edit: The field to update (e.g., 'time', 'extra_info').
-                       To delete the event, pass 'delete'.
+        field_to_edit: The field to update (e.g., 'time', 'extra_info'). To delete the event, pass 'delete'.
         new_value: The new value to assign to the specified field (ignored for delete) if it is date, it should be in 'DD-MM-YYYY' format.
 
     Returns:
