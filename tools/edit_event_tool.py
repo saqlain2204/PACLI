@@ -6,7 +6,7 @@ from tools.date_resolver_tool import resolve_day_from_date
 EVENTS_FILE = "events/event_data.json"
 
 @tool
-def edit_event(event_name: str, date: str | None, field_to_edit: str, new_value: str = "") -> str:
+def edit_event(event_name: str, date: str | None, field_to_edit: str, new_value: str | bool = "") -> str:
     """
     Edit or delete an existing event in the event_data.json file based on event name and date.
 

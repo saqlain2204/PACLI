@@ -9,7 +9,7 @@ from langchain.tools import tool
 EVENTS_FILE_PATH = os.path.join(os.path.dirname(__file__), '..', 'events', 'event_data.json')
 
 @tool
-def schedule_event(date: str, time: str | None, event_name: str, extra_info: str = "") -> str:
+def schedule_event(date: str, time: str | None, event_name: str, extra_info: str = "", public: bool = None) -> str:
     """
     Schedule an event and store it in a JSON file.
 
@@ -35,7 +35,8 @@ def schedule_event(date: str, time: str | None, event_name: str, extra_info: str
         "month": date_obj.strftime("%B"),
         "year": date_obj.year,
         "time": time,
-        "extra_info": extra_info or "None"
+        "extra_info": extra_info or "None",
+        "public": public if public is not None else True  # Default to public if not specified
     }
 
     # Load existing events

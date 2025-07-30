@@ -51,7 +51,7 @@ def get_most_similar_event(query, event_names):
     return event_names[best_idx], similarities[best_idx]
 
 @tool
-def find_event(event_name: str, date) -> str:
+def find_event(event_name: str, date: str | None) -> str:
     """
     Find a scheduled event by name and optionally by date, using string similarity if needed.
     If date is provided, only events on that date are considered. If not, all events are considered.

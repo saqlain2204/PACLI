@@ -21,7 +21,7 @@ def normalize_date(date_str):
         return None
 
 @tool
-def find_and_edit_event(event_name: str, field_to_edit: str, new_value: str, date: str | None, public: bool) -> str:
+def find_and_edit_event(event_name: str, field_to_edit: str, new_value: str | bool, date: str | None) -> str:
     """
     Find an event by name and automatically edit a specified field in it.
     
@@ -43,19 +43,10 @@ def find_and_edit_event(event_name: str, field_to_edit: str, new_value: str, dat
     if not found_data or (isinstance(found_data, list) and len(found_data) == 0):
         return "Event not found or invalid response from find_event."
 
-    # Filter events by visibility
     if isinstance(found_data, list):
-        if public is None:
-            events_to_edit = found_data
-        elif public:
-            events_to_edit = [e for e in found_data if e.get("visibility", "public") == "public"]
-        else:
-            events_to_edit = [e for e in found_data if e.get("visibility", "public") == "private"]
+        events_to_edit = found_data
     else:
-        if public is None or found_data.get("visibility", "public") == ("public" if public else "private"):
-            events_to_edit = [found_data]
-        else:
-            events_to_edit = []
+        events_to_edit = [found_data]
 
     results = []
     for event in events_to_edit:
@@ -77,7 +68,8 @@ def find_and_edit_event(event_name: str, field_to_edit: str, new_value: str, dat
             "field_to_edit": field_to_edit,
             "new_value": new_value_to_use
         })
-        results.append(result)
+        if result is not None:
+            results.append(str(result))
     if not results:
         return "No matching events found to edit."
     return "\n".join(results)
