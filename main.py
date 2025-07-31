@@ -1,5 +1,6 @@
 from agents.pa_agent import PersonalAssistantAgent
 from utils.terminal_utils import print_title, print_prompt, print_success, print_info, print_event
+from sort_events_json import sort_events_json
 
 import os
 import json
@@ -26,6 +27,7 @@ if __name__ == "__main__":
     agent = PersonalAssistantAgent()
     
     while True:
+        sort_events_json()
         print_prompt("\nHow can I help you today? > ", end="")
         task = input()
         print_success(task)
