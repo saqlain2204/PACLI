@@ -39,8 +39,8 @@ def find_event(event_name: str = "", date: str = "") -> str:
     except json.JSONDecodeError:
         return "❌ Failed to load events. File might be corrupted."
 
-    normalized_date = normalize_date(date)
-    query_name = event_name.strip().lower() if event_name else None
+    normalized_date = normalize_date(date) if date else None
+    query_name = event_name.strip().lower() if event_name and event_name.strip() else None
 
     filtered = events
     if normalized_date:

@@ -33,8 +33,8 @@ def find_and_edit_event(event_name: str, field_to_edit: str, new_value: str | bo
     Returns:
         Result of the edit operation.
     """
-    # First find the event(s)
-    date_arg = normalize_date(date) if date else None
+    # Always pass a string for date (empty string if not provided)
+    date_arg = normalize_date(date) if date else ""
     found_json = find_event.invoke({"event_name": event_name, "date": date_arg})
     if "error" in found_json:
         return "❌ Event not found. Please check the event name or date."
