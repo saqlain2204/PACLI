@@ -6,7 +6,7 @@ from tools.date_resolver_tool import resolve_day_from_date
 EVENTS_FILE = "events/event_data.json"
 
 @tool
-def edit_event(event_name: str, date: str | None, field_to_edit: str, new_value: str | bool = "") -> str:
+def edit_event(event_name: str, date: str | None, field_to_edit: str, time: str | None, new_value: str | bool = "") -> str:
     """
     Edit or delete an existing event in the event_data.json file based on event name and date.
 
@@ -15,6 +15,7 @@ def edit_event(event_name: str, date: str | None, field_to_edit: str, new_value:
         date: Date of the event to match (format: DD-MM-YYYY).
         field_to_edit: The field to update (e.g., 'time', 'extra_info'). To delete the event, pass 'delete'.
         new_value: The new value to assign to the specified field (ignored for delete) if it is date, it should be in 'DD-MM-YYYY' format.
+        time: Time of the event to match (optional, if not provided, it will match any time).
 
     Returns:
         A confirmation message about the edit or deletion.
@@ -31,7 +32,12 @@ def edit_event(event_name: str, date: str | None, field_to_edit: str, new_value:
     updated = False
     new_events = []
     for event in events:
-        if event.get("event_name") == event_name and event.get("date") == date:
+        match = (
+            event.get("event_name") == event_name and
+            event.get("date") == date and
+            (time is None or time == "" or event.get("time") == time)
+        )
+        if match:
             if field_to_edit.lower() == "delete":
                 updated = True  # Don't append this event to the new list
                 continue

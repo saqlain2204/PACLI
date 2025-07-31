@@ -21,12 +21,13 @@ def normalize_date(date_str):
     return None
 
 @tool
-def find_event(event_name: str = "", date: str = "") -> str:
+def find_event(event_name: str = "", date: str | datetime = "", time: str = "") -> str:
     """
     Find a scheduled event using fuzzy matching by name, optionally filtered by date.
     Args:
         event_name (str): Partial or full event name (case insensitive).
         date (str): Optional date in DD-MM-YYYY format.
+        time (str): Optional time to filter events.
     Returns:
         str: JSON string of the best matching event or list of matches.
     """
@@ -41,6 +42,23 @@ def find_event(event_name: str = "", date: str = "") -> str:
 
     normalized_date = normalize_date(date) if date else None
     query_name = event_name.strip().lower() if event_name and event_name.strip() else None
+    query_time = time.strip().lower() if time and time.strip() else None
+
+    def normalize_time(t):
+        if not t or t == 'None':
+            return ''
+        t = t.strip().lower().replace('.', '').replace(' ', '')
+        # Try parsing 12h format with/without leading zero
+        for fmt in ["%I:%M%p", "%H:%M"]:
+            try:
+                dt = datetime.strptime(t, fmt)
+                # Always return as zero-padded 12h format (e.g., 05:00am)
+                return dt.strftime("%I:%M%p").lower().replace('.', '').replace(' ', '')
+            except:
+                continue
+        # Remove am/pm spacing
+        t = t.replace('am', 'am').replace('pm', 'pm')
+        return t
 
     filtered = events
     if normalized_date:
@@ -48,8 +66,21 @@ def find_event(event_name: str = "", date: str = "") -> str:
         if not filtered:
             return json.dumps({"error": f"No events found on {normalized_date}."}, indent=2)
 
+    if query_time:
+        filtered = [e for e in filtered if normalize_time(e.get("time", "")) == normalize_time(query_time)]
+        if not filtered:
+            return json.dumps({"error": f"No events found at {time}."}, indent=2)
+
     if query_name:
-        name_map = {e["event_name"]: e for e in filtered if "event_name" in e}
+        # Normalize time for all events before fuzzy matching
+        norm_query_time = normalize_time(query_time) if query_time else None
+        name_map = {}
+        for e in filtered:
+            if "event_name" in e:
+                if norm_query_time is not None:
+                    if normalize_time(e.get("time", "")) != norm_query_time:
+                        continue
+                name_map[e["event_name"]] = e
         matches = process.extract(
             query_name,
             name_map.keys(),
