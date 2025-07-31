@@ -35,10 +35,12 @@ def format_html_email(events, date):
         <ul style='font-size:1.1em;padding-left:18px;'>
     """]
     for e in events_sorted:
+        date_str = e.get('date', '')
+        day_str = e.get('day', '')
         html.append(
             f"<li style='margin-bottom:16px;'>"
             f"<strong style='color:#111;font-size:1.15em;'>{e['event_name']}</strong>"
-            f" <span style='color:#555;font-size:0.95em;'><b>(Date: {e.get('date', '')})</b></span>"
+            f" <span style='color:#555;font-size:0.95em;'><b>(Date: {date_str}{' - ' + day_str if day_str else ''})</b></span>"
             f"{' <span style=\"color:#3182ce;font-weight:500;\">at ' + e.get('time', '') + '</span>' if e.get('time', '') else ''}"
             f"{' <span style=\"color:#555;font-style:italic;\">' + e.get('extra_info', '') + '</span>' if e.get('extra_info', '') and e.get('extra_info', '') != 'None' else ''}"
             f"</li>"
