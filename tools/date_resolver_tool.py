@@ -19,7 +19,7 @@ def resolve_day_from_date(date_str: str) -> str:
             dt = datetime.strptime(date_str, "%Y-%m-%d")
         except ValueError:
             return "Invalid date format. Please use DD-MM-YYYY or YYYY-MM-DD."
-    return dt.strftime("%A")
+    return {"day": dt.strftime("%A")}
 
 @tool
 def resolve_date_from_phrase(phrase: str) -> str:
@@ -33,4 +33,4 @@ def resolve_date_from_phrase(phrase: str) -> str:
     dt = dateparser.parse(phrase)
     if not dt:
         return "Could not parse the date phrase. Please try a different format."
-    return dt.strftime("%d-%m-%Y")
+    return {"date": dt.strftime("%d-%m-%Y")}

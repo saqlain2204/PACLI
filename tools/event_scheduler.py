@@ -22,9 +22,9 @@ def schedule_event(date: str, time: str | None, event_name: str, extra_info: str
 
     # Convert date into components
     try:
-        date_obj = datetime.strptime(date, "%Y-%m-%d")
+        date_obj = datetime.strptime(date, "%d-%m-%Y")
     except ValueError:
-        return "❌ Invalid date format. Use YYYY-MM-DD."
+        return "❌ Invalid date format. Use DD-MM-YYYY."
 
     if not time:
         time = ""
