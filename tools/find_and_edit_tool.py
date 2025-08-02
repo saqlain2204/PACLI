@@ -21,7 +21,7 @@ def normalize_date(date_str):
         return None
 
 @tool
-def find_and_edit_event(event_name: str, field_to_edit: str, new_value: str | bool, date: str | datetime | None, time: str | None = "") -> str:
+def find_and_edit_event(event_name: str, field_to_edit: str, new_value: str | bool, date: str = "", time: str | None = "") -> str:
     """
     Find an event by name and automatically edit a specified field in it.
     

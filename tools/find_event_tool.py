@@ -21,7 +21,8 @@ def normalize_date(date_str):
     return None
 
 @tool
-def find_event(event_name: str = "", date: str | datetime = "", time: str = "") -> str:
+def find_event(event_name: str = "", date: str = "", time: str = "") -> str:
+    
     """
     Find a scheduled event using fuzzy matching by name, optionally filtered by date.
     Args:
@@ -31,6 +32,13 @@ def find_event(event_name: str = "", date: str | datetime = "", time: str = "") 
     Returns:
         str: JSON string of the best matching event or list of matches.
     """
+    
+    # Enforce date is always a string at the function entry point
+    if isinstance(date, dict):
+        date = date.get('date', '')
+    elif not isinstance(date, str):
+        date = str(date)
+        
     if not os.path.exists(EVENTS_FILE):
         return "❌ Event file not found."
 
@@ -39,7 +47,7 @@ def find_event(event_name: str = "", date: str | datetime = "", time: str = "") 
             events = json.load(f)
     except json.JSONDecodeError:
         return "❌ Failed to load events. File might be corrupted."
-
+    # String value for date has already been enforced at function entry point
     normalized_date = normalize_date(date) if date else None
     query_name = event_name.strip().lower() if event_name and event_name.strip() else None
     query_time = time.strip().lower() if time and time.strip() else None

@@ -28,7 +28,7 @@ system: |
     - Use the `find_event` tool to locate the event with date as dd-mm-yyyy if date is not given, consider it as None.
 
     If the user wants to edit an event:
-    - Use the `find_and_edit_event` tool to locate the event. 
+    - Use the `find_and_edit_event` tool to locate the event and edit it. 
 
     - If the user wants to delete an event, pass 'delete' as the field_to_edit.
 
