@@ -52,9 +52,18 @@ def send_scheduled_mail():
     today = datetime.now()
     tomorrow = today + timedelta(days=1)
     tomorrow_str = tomorrow.strftime('%d-%m-%Y')
-    # Load all events
+
+    # Load all events and exclude today's and past events
     with open(EVENTS_PATH, 'r', encoding='utf-8') as f:
-        events = json.load(f)
+        all_events = json.load(f)
+    today_date = today.date()
+    def is_future_event(e):
+        try:
+            edate = datetime.strptime(e['date'], '%d-%m-%Y').date()
+            return edate > today_date
+        except:
+            return False
+    events = [e for e in all_events if is_future_event(e)]
 
     # Helper to check if event is public
     def is_public(e):
